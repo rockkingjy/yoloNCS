@@ -4,6 +4,7 @@ from mvnc import mvncapi as mvnc
 from skimage.transform import resize
 from utils.app_utils import FPS, WebcamVideoStream
 from multiprocessing import Queue, Pool
+import cv2
 
 classes = ["aeroplane", "bicycle", "bird", "boat", "bottle", "bus", "car", "cat", "chair", "cow", "diningtable", "dog", "horse", "motorbike", "person", "pottedplant", "sheep", "sofa", "train","tvmonitor"]
 dim=(448,448)
@@ -12,6 +13,7 @@ iou_threshold = 0.5
 num_class = 20
 num_box = 2
 grid_size = 7
+
 
 def show_results(img, results, img_width, img_height):
     img_cp = img
@@ -22,6 +24,7 @@ def show_results(img, results, img_width, img_height):
         y = int(results[i][2])
         w = int(results[i][3])//2
         h = int(results[i][4])//2
+
         if disp_console : print ('    class : ' + results[i][0] + ' , [x,y,w,h]=[' + str(x) + ',' + str(y) + ',' + str(int(results[i][3])) + ',' + str(int(results[i][4]))+'], Confidence = ' + str(results[i][5]) )
         xmin = x-w
         xmax = x+w
@@ -163,6 +166,13 @@ if __name__ == '__main__':
                                       height=args.height).start()
     fps = FPS().start()
     #
+    
+    
+    import maestro
+    servo = maestro.Controller()
+    angle = 6000
+    servo.setTarget(0, angle)#control the yaw, 5000 left, 7000 right
+    
     while True:  # fps._numFrames < 120
         frame = video_capture.read()
         input_q.put(frame)
@@ -171,6 +181,20 @@ if __name__ == '__main__':
         show_results(img, results, img_width, img_height)
         #cv2.imshow('Video', output_q.get())
         #cv2.imshow('Video', output_q.get())
+        if(len(results)!=0): 
+            x = int(results[0][1])
+            y = int(results[0][2])
+            w = int(results[0][3])//2
+            h = int(results[0][4])//2
+            print(img_width,img_height,results[0][0],x,y,w,h)
+            print(angle)
+            angle = angle + (400 - x) * 5
+            #if (x < 200):
+            #    angle = angle + 1000 
+            #elif (x > 600):
+            #    angle = angle - 1000
+            servo.setTarget(0, angle)
+        
         fps.update()
         print('[INFO] elapsed time: {:.2f}'.format(time.time() - t))
         if cv2.waitKey(1) & 0xFF == ord('q'):
