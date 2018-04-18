@@ -8,7 +8,7 @@
 
 * Compile .prototxt and corresponding .caffemodel (with the same name) to get NCS graph file:
 ```
-mvNCCompile prototxt/yolo_tiny_deploy.prototxt -w weights/yolo_tiny_deploy.caffemodel -s 12
+mvNCCompile prototxt/yolo_tiny_deploy.prototxt -w weights/yolo_tiny.caffemodel -s 12
 ```
 * The compiled binary file "graph" has to be in main folder after this step.
 
