@@ -167,12 +167,12 @@ if __name__ == '__main__':
     fps = FPS().start()
     #
     
-    
+    """"
     import maestro
     servo = maestro.Controller()
     angle = 6000
     servo.setTarget(0, angle)#control the yaw, 5000 left, 7000 right
-    
+    """
     while True:  # fps._numFrames < 120
         frame = video_capture.read()
         input_q.put(frame)
@@ -187,14 +187,15 @@ if __name__ == '__main__':
             w = int(results[0][3])//2
             h = int(results[0][4])//2
             print(img_width,img_height,results[0][0],x,y,w,h)
-            print(angle)
-            angle = angle + (400 - x) * 5
+
+            # print(angle)
+            # angle = angle + (400 - x) * 5
             #if (x < 200):
             #    angle = angle + 1000 
             #elif (x > 600):
             #    angle = angle - 1000
-            servo.setTarget(0, angle)
-        
+            # servo.setTarget(0, angle)
+
         fps.update()
         print('[INFO] elapsed time: {:.2f}'.format(time.time() - t))
         if cv2.waitKey(1) & 0xFF == ord('q'):
